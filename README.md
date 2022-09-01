@@ -1,13 +1,11 @@
-# Sample Hardhat Project
+A Simple Hotel Management Smart Contract.
+What are we exploring?
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+The Idea is quite Simple -
+Consider a five star hotel where anyone can book for a hotel Room on the COmpany's website.
 
-Try running some of the following tasks:
+In this case the reservation will be made in NFT and payment will be made in that regard.
 
-```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+And the NFT Ownership will be timestamped. Once the duration of booking elapses, the hotel by a click and request for the NFT back and failure to sign the request will amount to IP theft.
+
+So, let's see how we can build this.
