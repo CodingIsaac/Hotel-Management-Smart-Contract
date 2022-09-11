@@ -15,7 +15,7 @@ contract RadissonFlu is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
     constructor() ERC721("RadissonFlu", "RFLU") {}
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function safeMint(address to, string memory uri) public  {
         uint256 tokenId = _tokenIdCounter.current();
         require(tokenId >= MAX_SUPPLY, "Premium Rooms Unavailable" );
         _tokenIdCounter.increment();
@@ -32,7 +32,7 @@ contract RadissonFlu is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId) internal onlyOwner override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 

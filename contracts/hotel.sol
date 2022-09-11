@@ -3,54 +3,68 @@ pragma solidity ^0.8.9;
 
 import "./hotelTicket.sol";
 
-contract hotelRoomManagement {
-    enum accomodationStatus {Vacant, Booked}
+contract hotelRoomManagement is RadissonFlu {
+    enum accomodationStatus {
+        Vacant,
+        Booked
+    }
     accomodationStatus public currentState;
     address payable public hotelOwner;
-    uint public roomCharges;
-    uint[] public noOfRooms;
-    mapping(address => uint) balance;
-    
+    uint256 public roomCharges;
+    uint256 public noOfRooms;
+    mapping(address => uint256) balance;
+    uint public timeStarts = block.timestamp;
+    uint public timeEnds;
 
-    event Book(address _roomOccupant, uint _lodgingPrice);
+    event Book(address _roomOccupant, uint256 _lodgingPrice);
 
     constructor() {
         hotelOwner = payable(msg.sender);
-        currentState = accomodationStatus.Vacant;
-        noOfRooms = 50;
 
-
+        noOfRooms = 100;
     }
+
     receive() external payable {}
+
     fallback() external payable {}
 
     modifier whileVacant() {
-        require(currentState == accomodationStatus.Vacant, "Currently Booked." );
+        require(currentState == accomodationStatus.Vacant, "Currently Booked.");
+        _;
+    }
+
+    modifier onlyOwner() override{
+        require(msg.sender == hotelOwner, "You are not the Owner");
         _;
     }
 
     modifier roomCost() {
-        require(msg.value >= roomCharges, "Insufficient Funds" );
+        require(msg.value >= roomCharges, "Insufficient Funds");
         _;
     }
 
-    function determineRoomStatus() public view returns(bool) {
-        for ( uint i = 50; i >= noOfRooms; i--) {
-            if ()
+    function determineRoomStatus() public view returns (accomodationStatus) {
+        if (currentState == accomodationStatus.Vacant) {
+            return accomodationStatus.Vacant;
+        } else {
+            return accomodationStatus.Booked;
         }
     }
 
-    function book(uint _roomCost) whileVacant public {
+    function book(uint256 _roomCost) public payable whileVacant {
         roomCharges = _roomCost;
-        uint roomNumber = determineRoomStatus();
-        
+        currentState = determineRoomStatus();
         balance[msg.sender] += msg.value;
-        currentState = accommodationStatus.Booked;
-        noOfRooms--;
-        emit  Book(msg.sender, msg.value)
+        _safeMint(msg.sender, 1);
+        timeStarts = block.timestamp;
 
+        emit Book(msg.sender, msg.value);
+    }
 
-       
+    function burnTicket() public onlyOwner{
+        timeEnds = block.timestamp + 6000;
+        _burn(1);
+
     }
 
 
