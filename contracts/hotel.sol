@@ -33,10 +33,10 @@ contract hotelRoomManagement is RadissonFlu {
         _;
     }
 
-    modifier onlyOwner() override{
-        require(msg.sender == hotelOwner, "You are not the Owner");
-        _;
-    }
+    // modifier onlyOwner() virtual override{
+    //     require(msg.sender == hotelOwner, "You are not the Owner");
+    //     _;
+    // }
 
     modifier roomCost() {
         require(msg.value >= roomCharges, "Insufficient Funds");
