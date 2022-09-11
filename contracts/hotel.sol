@@ -20,6 +20,7 @@ contract hotelRoomManagement is RadissonFlu {
 
     constructor() {
         hotelOwner = payable(msg.sender);
+        roomCharges = 0.20 ether;
 
         noOfRooms = 100;
     }
@@ -37,6 +38,11 @@ contract hotelRoomManagement is RadissonFlu {
     //     require(msg.sender == hotelOwner, "You are not the Owner");
     //     _;
     // }
+    modifier cost() {
+        require(roomCharges >= 0.2 ether, "Insufficient funds");
+
+        _;
+    }
 
     modifier roomCost() {
         require(msg.value >= roomCharges, "Insufficient Funds");
@@ -51,8 +57,8 @@ contract hotelRoomManagement is RadissonFlu {
         }
     }
 
-    function book(uint256 _roomCost) public payable whileVacant {
-        roomCharges = _roomCost;
+    function book() public payable cost whileVacant {
+        // roomCharges = _roomCost;
         currentState = determineRoomStatus();
         balance[msg.sender] += msg.value;
         _safeMint(msg.sender, 1);
