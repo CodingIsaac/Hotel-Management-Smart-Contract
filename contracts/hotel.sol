@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "./hotelTicket.sol";
 
-contract hotelRoomManagement is RadissonFlu {
+contract  hotelRoomManagement is RadissonFlu {
     enum accomodationStatus {
         Vacant,
         Booked
@@ -16,13 +16,14 @@ contract hotelRoomManagement is RadissonFlu {
     uint public timeStarts = block.timestamp;
     uint public timeEnds;
 
+
     event Book(address _roomOccupant, uint256 _lodgingPrice);
 
     constructor() {
         hotelOwner = payable(msg.sender);
         roomCharges = 0.20 ether;
 
-        noOfRooms = 100;
+        noOfRooms = 50;
     }
 
     receive() external payable {}
@@ -57,14 +58,14 @@ contract hotelRoomManagement is RadissonFlu {
         }
     }
 
-    function book() public payable cost whileVacant {
+    function book(address _booker, uint _bookingprice) public payable cost whileVacant {
         // roomCharges = _roomCost;
         currentState = determineRoomStatus();
         balance[msg.sender] += msg.value;
         _safeMint(msg.sender, 1);
         timeStarts = block.timestamp;
 
-        emit Book(msg.sender, msg.value);
+        emit Book(_booker, _bookingprice);
     }
 
     function burnTicket() public onlyOwner{
@@ -72,6 +73,9 @@ contract hotelRoomManagement is RadissonFlu {
         _burn(1);
 
     }
+
+    
+
 
 
 }
