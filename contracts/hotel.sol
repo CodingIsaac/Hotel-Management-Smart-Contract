@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "./hotelTicket.sol";
 
-contract hotelRoomManagement {
+contract hotelRoomManagement is RadissonFlu {
     enum accomodationStatus {
         Vacant,
         Booked
@@ -69,12 +69,12 @@ contract hotelRoomManagement {
         timeStarts = block.timestamp;
 
         emit Book(_booker, _bookingprice);
-        safeMint(msg.sender, 1);
+        _safeMint(msg.sender, NFTids);
     }
 
     function burnTicket() public onlyOwner{
         timeEnds = block.timestamp + 6000;
-        _burn(1);
+        _burn(NFTids);
       
 
     }

@@ -26,7 +26,7 @@ contract RadissonFlu is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _baseNFTURI = baseURI;
     }
 
-    function safeMint() public payable {
+    function safeMint() external payable {
         // uint256 tokenId = _tokenIdCounter.current();
         require(NFTids < maxNFTids, "Premium Rooms Rxceeded");
         require(msg.value >= bookingPrice, "Check the Booking Price");
