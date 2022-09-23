@@ -9,21 +9,55 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract RadissonFlu is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
+    using Strings for uint256;
 
-    Counters.Counter private _tokenIdCounter;
-    uint256 MAX_SUPPLY = 100;
+    string _baseNFTURI;
 
-    constructor() ERC721("RadissonFlu", "RFLU") {
-        
+    uint256 public bookingPrice = 0.2 ether;
+
+    uint256 public maxNFTids = 50;
+
+    uint256 public NFTids;
+
+    // Counters.Counter private _tokenIdCounter;
+    // uint256 MAX_SUPPLY = 100;
+
+    constructor(string memory baseURI) ERC721("RadissonFlu", "RFLU") {
+        _baseNFTURI = baseURI;
     }
 
-    function safeMint(address to, string memory uri) public  {
-        uint256 tokenId = _tokenIdCounter.current();
-        require(tokenId >= MAX_SUPPLY, "Premium Rooms Unavailable" );
-        _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
+    function safeMint() public payable {
+        // uint256 tokenId = _tokenIdCounter.current();
+        require(NFTids < maxNFTids, "Premium Rooms Rxceeded");
+        require(msg.value >= bookingPrice, "Check the Booking Price");
+        // require(tokenId >= MAX_SUPPLY, "Premium Rooms Unavailable" );
+        // _tokenIdCounter.increment();
+        NFTids += 1;
+        _safeMint(msg.sender, NFTids);
+        // _setTokenURI(tokenId, uri);
     }
+
+    // 
+
+    function _baseURI() internal view virtual override returns (string memory) {
+            return _baseNFTURI;
+        }
+
+    // 
+
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        require(_exists(tokenId), "ERC721Metadata: URI query nonexistent token");
+        string memory baseURI = _baseURI();
+
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(), ".json")) : "";
+        }
+
 
     // The following functions are overrides required by Solidity.
 
@@ -38,14 +72,7 @@ contract RadissonFlu is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
-        return super.tokenURI(tokenId);
-    }
+    
 
     function supportsInterface(bytes4 interfaceId)
         public
