@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "./hotelTicket.sol";
 
-contract  hotelRoomManagement is RadissonFlu {
+contract hotelRoomManagement {
     enum accomodationStatus {
         Vacant,
         Booked
@@ -35,15 +35,19 @@ contract  hotelRoomManagement is RadissonFlu {
         _;
     }
 
-    // modifier onlyOwner() virtual override{
-    //     require(msg.sender == hotelOwner, "You are not the Owner");
-    //     _;
-    // }
+    modifier onlyOwner() virtual override{
+        require(msg.sender == hotelOwner, "You are not the Owner");
+        _;
+    }
     modifier cost() {
         require(roomCharges >= 0.2 ether, "Insufficient funds");
 
         _;
     }
+    // modifier onlyOwner() {
+    //     require(msg.sender == hotelOwner, "Only Owner");
+    //     _;
+    // }
 
     modifier roomCost() {
         require(msg.value >= roomCharges, "Insufficient Funds");
@@ -62,15 +66,16 @@ contract  hotelRoomManagement is RadissonFlu {
         // roomCharges = _roomCost;
         currentState = determineRoomStatus();
         balance[msg.sender] += msg.value;
-        _safeMint(msg.sender, 1);
         timeStarts = block.timestamp;
 
         emit Book(_booker, _bookingprice);
+        safeMint(msg.sender, 1);
     }
 
     function burnTicket() public onlyOwner{
         timeEnds = block.timestamp + 6000;
         _burn(1);
+      
 
     }
 
